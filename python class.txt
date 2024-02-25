@@ -1,0 +1,16 @@
+class HorizontalMinitermGenerator:
+    def __init__(self, relations):
+        self.relations = relations
+    
+    def generate_fragments(self):
+        fragments = []
+        for relation in self.relations:
+            fragment = self._generate_fragment(relation)
+            fragments.append(fragment)
+        return fragments
+    
+    def _generate_fragment(self, relation):
+        predicate_list = [f"{relation}.{predicate}" for predicate in relation.predicates]
+        fragment = " AND ".join(predicate_list)
+        fragment = "(" + fragment + ")"
+        return fragment
