@@ -1,0 +1,24 @@
+CREATE OR REPLACE TYPE PredicateList AS TABLE OF VARCHAR2(4000);
+
+CREATE OR REPLACE TYPE Relation AS OBJECT (
+    predicates PredicateList
+);
+
+CREATE OR REPLACE TYPE RelationList AS TABLE OF Relation;
+
+CREATE OR REPLACE TYPE HorizontalMinitermGenerator AS OBJECT (
+    relations RelationList,
+    MEMBER FUNCTION generate_fragments RETURN PredicateList PIPELINED
+);
+
+CREATE OR REPLACE TYPE BODY HorizontalMinitermGenerator AS
+    MEMBER FUNCTION generate_fragments RETURN PredicateList PIPELINED IS
+        fragment VARCHAR2(4000);
+    BEGIN
+        FOR i IN 1..relations.COUNT LOOP
+            fragment := '(' || LISTAGG(relations(i).predicates(i), ' AND ') WITHIN GROUP (ORDER BY NULL) || ')';
+            PIPE ROW (fragment);
+        END LOOP;
+        RETURN;
+    END generate_fragments;
+END;
