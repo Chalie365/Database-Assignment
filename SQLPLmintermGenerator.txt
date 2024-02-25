@@ -1,0 +1,17 @@
+DECLARE
+    generator HorizontalMinitermGenerator;
+    fragments PredicateList;
+BEGIN
+    generator := HorizontalMinitermGenerator();
+
+    generator.relations := RelationList(
+        Relation(PredicateList('predicate1', 'predicate2', 'predicate3')),
+        Relation(PredicateList('predicate4', 'predicate5'))
+    );
+
+    SELECT * BULK COLLECT INTO fragments FROM TABLE(generator.generate_fragments());
+
+    FOR i IN 1..fragments.COUNT LOOP
+        DBMS_OUTPUT.PUT_LINE(fragments(i));
+    END LOOP;
+END;
