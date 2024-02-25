@@ -1,0 +1,12 @@
+predicate_list1 = ["predicate1", "predicate2", "predicate3"]
+relation1 = Relation(predicate_list1)
+
+predicate_list2 = ["predicate4", "predicate5"]
+relation2 = Relation(predicate_list2)
+
+relations = [relation1, relation2]
+
+generator = HorizontalMinitermGenerator(relations)
+fragments = generator.generate_fragments()
+for fragment in fragments:
+    print(fragment)
